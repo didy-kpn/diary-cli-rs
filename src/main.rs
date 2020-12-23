@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use std::env;
 use std::fs::{create_dir_all, OpenOptions};
 use std::io::{BufReader, BufWriter, Read, Write};
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use structopt::StructOpt;
 
 #[derive(StructOpt, Debug)]
@@ -16,10 +16,16 @@ struct Opt {
 #[derive(StructOpt, Debug)]
 enum Sub {
     #[structopt(name = "new", about = "Create a new diary directory")]
-    New,
+    New(DirectoryName),
 
     #[structopt(name = "add", about = "Add a new page")]
     Add(PageKind),
+}
+
+#[derive(StructOpt, Debug)]
+struct DirectoryName {
+    #[structopt(parse(from_os_str), about = "directory name")]
+    name: PathBuf
 }
 
 #[derive(StructOpt, Debug)]
@@ -82,8 +88,8 @@ fn main() {
             }
         }
         // 日記を作成する
-        Sub::New => {
-            let directory_path = "diary";
+        Sub::New(directory_name) => {
+            let directory_path = &format!("{}/{}", env::current_dir().unwrap().display(), directory_name.name.as_path().display());
 
             // 日記ディレクトリまたは設定ファイルが存在してる場合はディレクトリを作成しない
             if Path::new(directory_path).exists() || Path::new(setting_file_name).exists() {
@@ -91,7 +97,7 @@ fn main() {
                 return;
             }
 
-            if let Err(error) = create_dir_all(directory_path) {
+            if let Err(error) = create_dir_all(directory_path.clone()) {
                 eprintln!("create_dir_all: {}", error);
                 return;
             } else {
@@ -124,13 +130,11 @@ fn main() {
 "#;
             let setting = DiarySetting {
                 entry_path: format!(
-                    "{}/{}/entries",
-                    env::current_dir().unwrap().display(),
+                    "{}/entries",
                     directory_path
                 ),
                 article_path: format!(
-                    "{}/{}/articles",
-                    env::current_dir().unwrap().display(),
+                    "{}/articles",
                     directory_path
                 ),
                 diary_template: diary_template.to_string(),
