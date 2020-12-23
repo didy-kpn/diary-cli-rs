@@ -107,6 +107,9 @@ fn main() {
             // 実績(CHANGELOG)
             write_file(directory_path, "CHANGELOG.md", "# CHANGELOG (実績)\n");
 
+            // ガイドライン(CONTRIBUTING)
+            write_file(directory_path, "CONTRIBUTING.md", "# CONTRIBUTING (ガイドライン)\n");
+
             // 設定ファイル
             let diary_template = r#"# {}
 
