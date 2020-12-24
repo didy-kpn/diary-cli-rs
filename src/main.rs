@@ -93,7 +93,7 @@ fn main() {
 
             // 日記ディレクトリまたは設定ファイルが存在してる場合はディレクトリを作成しない
             if Path::new(directory_path).exists() || Path::new(setting_file_name).exists() {
-                eprintln!("not ok: journal or journal-cli.yaml exists");
+                eprintln!("not ok: {} or journal-cli.yaml exists", directory_name.name.as_path().display());
                 return;
             }
 
