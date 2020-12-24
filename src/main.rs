@@ -7,7 +7,7 @@ use std::path::{Path, PathBuf};
 use structopt::StructOpt;
 
 #[derive(StructOpt, Debug)]
-#[structopt(name = "diary")]
+#[structopt(name = "journal-cli")]
 struct Opt {
     #[structopt(subcommand)]
     sub: Sub,
@@ -15,7 +15,7 @@ struct Opt {
 
 #[derive(StructOpt, Debug)]
 enum Sub {
-    #[structopt(name = "new", about = "Create a new diary directory")]
+    #[structopt(name = "new", about = "Create a new journal directory")]
     New(DirectoryName),
 
     #[structopt(name = "add", about = "Add a new page")]
@@ -38,16 +38,16 @@ enum PageKind {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-struct DiarySetting {
+struct JournalSetting {
     entry_path: String,
     article_path: String,
-    diary_template: String,
+    journal_template: String,
 }
 
 fn main() {
     let opt = Opt::from_args();
     let today = Utc::today();
-    let setting_file_name = "diary-cli.yaml";
+    let setting_file_name = "journal-cli.yaml";
 
     match &opt.sub {
         // ページを追加
@@ -55,14 +55,14 @@ fn main() {
             // 設定ファイルを読み込む
             let file = OpenOptions::new().read(true).open(setting_file_name);
             if let Err(err) = file {
-                eprintln!("diary-cli.yaml: {}", err);
+                eprintln!("journal-cli.yaml: {}", err);
                 return;
             }
             let file = file.unwrap();
             let mut f = BufReader::new(file);
             let mut content = String::new();
             f.read_to_string(&mut content).unwrap();
-            let setting: DiarySetting = serde_yaml::from_str(&content).unwrap();
+            let setting: JournalSetting = serde_yaml::from_str(&content).unwrap();
 
             match add {
                 // 本日の日記
@@ -79,7 +79,7 @@ fn main() {
                     let file_name =
                         format!("{}_{}_{}.md", today.year(), today.month(), today.day());
                     let content = setting
-                        .diary_template
+                        .journal_template
                         .replace("{}", &today.format("%Y/%m/%d").to_string());
                     write_file(dir_path, &file_name, &content);
                 }
@@ -93,7 +93,7 @@ fn main() {
 
             // 日記ディレクトリまたは設定ファイルが存在してる場合はディレクトリを作成しない
             if Path::new(directory_path).exists() || Path::new(setting_file_name).exists() {
-                eprintln!("not ok: diary or diary-cli.yaml exists");
+                eprintln!("not ok: journal or journal-cli.yaml exists");
                 return;
             }
 
@@ -101,7 +101,7 @@ fn main() {
                 eprintln!("create_dir_all: {}", error);
                 return;
             } else {
-                println!("ok: diary directory");
+                println!("ok: journal directory");
             }
 
             // 各記事へのリンク(README)
@@ -117,7 +117,7 @@ fn main() {
             write_file(directory_path, "CONTRIBUTING.md", "# CONTRIBUTING (ガイドライン)\n");
 
             // 設定ファイル
-            let diary_template = r#"# {}
+            let journal_template = r#"# {}
 
 ## Concrete Experience (具体的経験)
 
@@ -128,7 +128,7 @@ fn main() {
 ## Active Experimentation (試行):
 
 "#;
-            let setting = DiarySetting {
+            let setting = JournalSetting {
                 entry_path: format!(
                     "{}/entries",
                     directory_path
@@ -137,7 +137,7 @@ fn main() {
                     "{}/articles",
                     directory_path
                 ),
-                diary_template: diary_template.to_string(),
+                journal_template: journal_template.to_string(),
             };
             write_file(
                 directory_path,

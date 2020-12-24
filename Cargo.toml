@@ -1,9 +1,9 @@
 [package]
-name = "diary-cli"
+name = "journal-cli"
 version = "0.1.0"
 authors = ["Didy KUPANHY <d.kupanhy@gmail.com>"]
 edition = "2018"
-repository = "https://github.com/didy-kpn/diary-cli-rs"
+repository = "https://github.com/didy-kpn/journal-cli-rs"
 license = "MIT"
 readme = "README.md"
 

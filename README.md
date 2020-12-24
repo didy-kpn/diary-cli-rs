@@ -1,11 +1,11 @@
-## diary-cli-rs
+## journal-cli-rs
 
 日記作成および管理のためのRust製のCLIツールです。
 
 ## インストール
 
 ```
-$ cargo install --git https://github.com/didy-kpn/diary-cli-rs.git
+$ cargo install --git https://github.com/didy-kpn/journal-cli-rs.git
 ```
 
 ## 使い方
@@ -15,11 +15,11 @@ $ cargo install --git https://github.com/didy-kpn/diary-cli-rs.git
 オプションについては以下のコマンドを実行してください。
 
 ```
-$ diary-cli --help
+$ journal-cli --help
 ```
 
 ## ライセンス
 
 このプロジェクトは MIT ライセンスの元にライセンスされています。
 
-詳細は[LICENSE](https://github.com/didy-kpn/diary-cli-rs/blob/master/LICENSE)をご覧ください。
+詳細は[LICENSE](https://github.com/didy-kpn/journal-cli-rs/blob/master/LICENSE)をご覧ください。
